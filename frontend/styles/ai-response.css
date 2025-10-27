@@ -1,0 +1,176 @@
+/* AI Response Styling */
+.ai-response {
+    line-height: 1.8;
+    color: #1f2937;
+    font-size: 15px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Headings */
+.ai-response h1,
+.ai-response h2,
+.ai-response h3,
+.ai-response h4 {
+    font-weight: 600;
+    margin-top: 1.5em;
+    margin-bottom: 0.8em;
+    color: #111827;
+}
+
+.ai-response h1 {
+    font-size: 1.8em;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 0.3em;
+}
+
+.ai-response h2 {
+    font-size: 1.5em;
+}
+
+.ai-response h3 {
+    font-size: 1.3em;
+    color: #2563eb;
+}
+
+.ai-response h4 {
+    font-size: 1.1em;
+}
+
+/* Bold and Italic */
+.ai-response strong {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.ai-response em {
+    font-style: italic;
+    color: #475569;
+}
+
+/* Paragraphs */
+.ai-response p {
+    margin-bottom: 1em;
+    line-height: 1.8;
+}
+
+/* Lists */
+.ai-response ul,
+.ai-response ol {
+    margin-left: 1.5em;
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+    padding-left: 0.5em;
+}
+
+.ai-response ul {
+    list-style-type: disc;
+}
+
+.ai-response ol {
+    list-style-type: decimal;
+}
+
+.ai-response li {
+    margin-bottom: 0.5em;
+    line-height: 1.6;
+}
+
+.ai-response li > ul,
+.ai-response li > ol {
+    margin-top: 0.5em;
+}
+
+/* Nested lists */
+.ai-response ul ul {
+    list-style-type: circle;
+    margin-left: 1em;
+}
+
+.ai-response ul ul ul {
+    list-style-type: square;
+}
+
+/* Code blocks */
+.ai-response code {
+    background-color: #f1f5f9;
+    color: #dc2626;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: 'Courier New', Consolas, monospace;
+    font-size: 0.9em;
+}
+
+.ai-response pre {
+    background-color: #1e293b;
+    color: #e2e8f0;
+    padding: 1em;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 1em 0;
+}
+
+.ai-response pre code {
+    background-color: transparent;
+    color: #e2e8f0;
+    padding: 0;
+}
+
+/* Blockquotes */
+.ai-response blockquote {
+    border-left: 4px solid #3b82f6;
+    padding-left: 1em;
+    margin-left: 0;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    color: #475569;
+    font-style: italic;
+    background-color: #f8fafc;
+    padding: 0.8em 1em;
+    border-radius: 4px;
+}
+
+/* Links */
+.ai-response a {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+.ai-response a:hover {
+    color: #1d4ed8;
+}
+
+/* Tables */
+.ai-response table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+}
+
+.ai-response th,
+.ai-response td {
+    border: 1px solid #e5e7eb;
+    padding: 0.6em;
+    text-align: left;
+}
+
+.ai-response th {
+    background-color: #f3f4f6;
+    font-weight: 600;
+}
+
+/* Horizontal rule */
+.ai-response hr {
+    border: none;
+    border-top: 2px solid #e5e7eb;
+    margin: 2em 0;
+}
+
+/* First paragraph (no top margin) */
+.ai-response > p:first-child {
+    margin-top: 0;
+}
+
+/* Last element (no bottom margin) */
+.ai-response > *:last-child {
+    margin-bottom: 0;
+}

@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnFlow - Online Learning Platform</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 0 2rem;
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+        
+        .nav-brand h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+        
+        .nav-search {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 3rem;
+        }
+        
+        .nav-search input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        
+        .nav-search input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+        
+        .nav-links a:hover {
+            color: #667eea;
+        }
+        
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            font-size: 22px;
+            transition: transform 0.3s;
+        }
+        
+        .notification-bell:hover {
+            transform: scale(1.1);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            border-radius: 12px;
+            padding: 2px 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        
+        .btn-logout, .btn-primary, .btn-secondary {
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .btn-logout, .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-logout:hover, .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .section {
+            display: none !important;  /* Force hide by default */
+            padding: 3rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .section.active {
+            display: block !important;  /* Force show when active */
+        }
+
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .auth-section {
+            display: none !important;
+            min-height: calc(100vh - 70px);
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .auth-section.active {
+            display: flex !important;
+        }
+
+        
+        .auth-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        .auth-container h2 {
+            margin-bottom: 2rem;
+            font-size: 28px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #475569;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .btn-full {
+            width: 100%;
+        }
+        
+        .auth-switch {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #64748b;
+        }
+        
+        .auth-switch a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .landing-hero {
+            text-align: center;
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: calc(100vh - 70px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .landing-hero h1 {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .landing-hero p {
+            font-size: 22px;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+        }
+        
+        .landing-actions {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,255,255,0.3);
+        }
+        
+        .dashboard-header {
+            margin-bottom: 3rem;
+        }
+        
+        .dashboard-header h2 {
+            font-size: 36px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .dashboard-header p {
+            color: #64748b;
+            font-size: 16px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 16px;
+            border: 2px dashed #e2e8f0;
+        }
+        
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 1rem;
+            color: #475569;
+        }
+        
+        .empty-state p {
+            color: #94a3b8;
+            margin-bottom: 2rem;
+        }
+        
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        
+        .course-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        
+        .course-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .course-card-content {
+            padding: 1.5rem;
+        }
+        
+        .course-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #eff6ff;
+            color: #2563eb;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .course-card h3 {
+            margin: 0.5rem 0;
+            font-size: 18px;
+        }
+        
+        .course-instructor {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 1rem;
+        }
+        
+        .course-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+        
+        .course-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: -100px;
+            right: 2rem;
+            background: #1e293b;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: bottom 0.3s ease;
+            z-index: 2000;
+            font-weight: 500;
+        }
+        
+        .toast.show {
+            bottom: 2rem;
+        }
+        
+        .toast-success { background: #10b981; }
+        .toast-error { background: #ef4444; }
+        .toast-info { background: #3b82f6; }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-content h2 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .role-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        
+        .role-badge.student {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+        
+        .role-badge.instructor {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .dashboard-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .ai-tutor-container {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .ai-header {
+            padding: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .ai-chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+        
+        .ai-messages {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .message {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .message.user-message {
+            justify-content: flex-end;
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 1rem;
+            border-radius: 12px;
+        }
+        
+        .ai-message .message-content {
+            background: #f1f5f9;
+        }
+        
+        .user-message .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .ai-input-container {
+            padding: 2rem;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .ai-input-container textarea {
+            flex: 1;
+            resize: none;
+        }
+        
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+        
+        .learning-profile {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-search { display: none; }
+            .nav-links { gap: 1rem; }
+            .landing-hero h1 { font-size: 36px; }
+            .form-row { grid-template-columns: 1fr; }
+            .profile-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="mainNav" style="display: none;">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2 onclick="showSection('dashboard')">LearnFlow</h2>
+            </div>
+            
+            <div class="nav-links" id="navLinks">
+                <!-- Common links for all roles -->
+                <a href="#" onclick="showSection('dashboard')">Dashboard</a>
+                <a href="#" onclick="showSection('courses')">Courses</a>
+                <a href="#" onclick="showSection('ai-tutor')">AI Tutor</a>
+                
+                <!-- Instructor-only links -->
+                <a href="#" onclick="showSection('instructor-courses')" id="instructorCoursesLink" class="role-instructor hidden">My Courses</a>
+                <a href="#" onclick="showSection('create-course')" id="createCourseLink" class="role-instructor hidden">Create Course</a>
+                
+                <!-- Student-only links -->
+                <a href="#" onclick="showSection('my-learning')" id="myLearningLink" class="role-student hidden">My Learning</a>
+                <a href="#" onclick="showSection('progress')" id="progressLink" class="role-student hidden">Progress</a>
+                
+                <div class="nav-user" id="userSection">
+                    <a href="#" onclick="showSection('profile')" id="userName"></a>
+                    <span id="userRoleBadge" class="role-badge"></span>
+                    <button onclick="logout()" class="btn-logout">Logout</button>
+                </div>
+                
+                <div class="nav-auth" id="authSection">
+                    <button onclick="showSection('login')" class="btn-secondary">Login</button>
+                    <button onclick="showSection('register')" class="btn-primary">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Landing Page -->
+    <section id="landing-section" class="section active">
+        <div class="landing-container">
+            <div class="landing-hero">
+                <h1>Welcome to LearnFlow</h1>
+                <p>Your AI-powered learning companion for mastering any subject</p>
+                <div class="landing-actions">
+                    <button onclick="showSection('login')" class="btn-primary">Get Started</button>
+                    <button onclick="showSection('register')" class="btn-secondary">Create Account</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Section -->
+    <section id="login-section" class="section">
+        <div class="auth-container">
+            <h2>Welcome Back</h2>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+            <p>Don't have an account? <a href="#" onclick="showSection('register')">Sign up</a></p>
+        </div>
+    </section>
+
+    <!-- Register Section -->
+    <section id="register-section" class="section">
+        <div class="auth-container">
+            <h2>Create Account</h2>
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="registerUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" id="registerFirstName" required>
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" id="registerLastName" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="registerRole">
+                        <option value="student">Student</option>
+                        <option value="instructor">Instructor</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Create Account</button>
+            </form>
+            <p>Already have an account? <a href="#" onclick="showSection('login')">Login</a></p>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard-section" class="section">
+        <div class="container">
+            <h2 id="dashboardTitle">Your Learning Dashboard</h2>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3 id="coursesTitle">Enrolled Courses</h3>
+                    <div id="enrolledCoursesList"></div>
+                </div>
+                <div class="dashboard-card">
+                    <h3 id="progressTitle">Learning Progress</h3>
+                    <div id="progressChart"></div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Quick Actions</h3>
+                    <div id="quickActions">
+                        <button onclick="showSection('ai-tutor')" class="btn-primary">Ask AI Tutor</button>
+                        <button onclick="showSection('courses')" class="btn-secondary">Browse Courses</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section id="courses-section" class="section">
+        <div class="container">
+            <div class="courses-header">
+                <h2>Available Courses</h2>
+                <button onclick="showSection('create-course')" id="createCourseBtn" class="btn-primary" style="display: none;">Create New Course</button>
+            </div>
+            <div class="courses-grid" id="coursesList">
+                <!-- Courses will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Tutor Section -->
+    <section id="ai-tutor-section" class="section">
+        <div class="container">
+            <div class="ai-tutor-container">
+                <div class="ai-header">
+                    <h2>AI Learning Assistant</h2>
+                    <div class="ai-session-controls">
+                        <button onclick="createNewAISession()" class="btn-secondary">New Session</button>
+                        <select id="sessionType">
+                            <option value="tutor">Tutor</option>
+                            <option value="career_advisor">Career Advisor</option>
+                            <option value="code_reviewer">Code Reviewer</option>
+                            <option value="study_planner">Study Planner</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="ai-chat-container">
+                    <div class="ai-messages" id="aiMessages">
+                        <div class="message ai-message">
+                            <div class="message-content">
+                                <strong>AI Tutor:</strong> Hello! I'm your AI learning assistant. How can I help you today? You can ask me to explain concepts, create exercises, review code, or help with your career goals.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-input-container">
+                        <textarea 
+                            id="aiQueryInput" 
+                            placeholder="Ask me anything about learning, coding, career advice..." 
+                            rows="3"
+                        ></textarea>
+                        <button onclick="sendAIQuery()" class="btn-primary">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Instructor Courses Section -->
+    <section id="instructor-courses-section" class="section">
+        <div class="container">
+            <h2>My Courses</h2>
+            <div id="instructorCoursesList">
+                <!-- Instructor courses will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Create Course Section -->
+    <section id="create-course-section" class="section">
+        <div class="container">
+            <h2>Create New Course</h2>
+            <form id="createCourseForm" onsubmit="createCourse(event)">
+                <div class="form-group">
+                    <label>Course Title</label>
+                    <input type="text" id="courseTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="courseDescription" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" id="courseCategory" required>
+                </div>
+                <div class="form-group">
+                    <label>Difficulty Level</label>
+                    <select id="courseDifficulty">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Create Course</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- My Progress Section -->
+    <section id="my-progress-section" class="section">
+        <div class="container">
+            <h2>My Learning Progress</h2>
+            <div id="progressContent">
+                <p>Your progress analytics will appear here.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certificates Section -->
+    <section id="certificates-section" class="section">
+        <div class="container">
+            <h2>My Certificates</h2>
+            <div id="certificatesContent">
+                <p>Certificates you earn will appear here.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile-section" class="section">
+        <div class="container">
+            <h2>Your Profile</h2>
+            <div class="profile-container">
+                <div class="profile-form">
+                    <h3>Personal Information</h3>
+                    <form id="profileForm" onsubmit="updateProfile(event)">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" id="profileFirstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" id="profileLastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Bio</label>
+                            <textarea id="profileBio" rows="4"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Update Profile</button>
+                    </form>
+                </div>
+                
+                <div class="learning-profile">
+                    <h3>Learning Preferences</h3>
+                    <form id="learningProfileForm" onsubmit="updateLearningProfile(event)">
+                        <div class="form-group">
+                            <label>Learning Style</label>
+                            <select id="learningStyle">
+                                <option value="visual">Visual</option>
+                                <option value="auditory">Auditory</option>
+                                <option value="kinesthetic">Kinesthetic</option>
+                                <option value="reading_writing">Reading/Writing</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Proficiency Level</label>
+                            <select id="proficiencyLevel">
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-secondary">Save Preferences</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // Check if user is logged in
+        function isLoggedIn() {
+            return localStorage.getItem('token') !== null;
+        }
+
+        // Get user role
+        function getUserRole() {
+            return localStorage.getItem('userRole');
+        }
+
+        // Show/hide navigation based on authentication
+        function updateNavigation() {
+            const isLoggedIn = localStorage.getItem('token') !== null;
+            const nav = document.getElementById('mainNav');
+            const authSection = document.getElementById('authSection');
+            const userSection = document.getElementById('userSection');
+            
+            if (isLoggedIn) {
+                nav.style.display = 'block';
+                authSection.style.display = 'none';
+                userSection.style.display = 'flex';
+                
+                // Update user info
+                document.getElementById('userName').textContent = localStorage.getItem('userName') || 'User';
+                const userRole = getUserRole();
+                document.getElementById('userRoleBadge').textContent = userRole;
+                document.getElementById('userRoleBadge').className = `role-badge ${userRole}`;
+                
+                // Show/hide role-specific links
+                document.querySelectorAll('.role-student').forEach(el => {
+                    el.style.display = userRole === 'student' ? 'block' : 'none';
+                });
+                
+                document.querySelectorAll('.role-instructor').forEach(el => {
+                    el.style.display = userRole === 'instructor' ? 'block' : 'none';
+                });
+                
+                // Show create course button for instructors on courses page
+                document.getElementById('createCourseBtn').style.display = 
+                    userRole === 'instructor' ? 'block' : 'none';
+                    
+            } else {
+                nav.style.display = 'none';
+                authSection.style.display = 'flex';
+                userSection.style.display = 'none';
+            }
+        }
+
+        // Show section function
+        function showSection(sectionName) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const section = document.getElementById(`${sectionName}-section`);
+            if (section) {
+                section.classList.add('active');
+                
+                // Load section-specific data
+                switch(sectionName) {
+                    case 'dashboard':
+                        loadDashboardData();
+                        break;
+                    case 'courses':
+                        loadCourses();
+                        break;
+                    case 'instructor-courses':
+                        loadInstructorCourses();
+                        break;
+                    case 'ai-tutor':
+                        // Already initialized
+                        break;
+                }
+            }
+        }
+
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Mock login - in a real app, this would be an API call
+            if (email && password) {
+                // Store user data in localStorage
+                localStorage.setItem('token', 'mock-jwt-token');
+                localStorage.setItem('userRole', 'student'); // Default to student for demo
+                localStorage.setItem('userName', 'Demo User');
+                
+                showNotification('Login successful!', 'success');
+                updateNavigation();
+                showSection('dashboard');
+            } else {
+                showNotification('Please enter email and password', 'error');
+            }
+        }
+
+        // Handle registration
+        function handleRegister(event) {
+            event.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const firstName = document.getElementById('registerFirstName').value;
+            const lastName = document.getElementById('registerLastName').value;
+            const password = document.getElementById('registerPassword').value;
+            const role = document.getElementById('registerRole').value;
+            
+            // Mock registration - in a real app, this would be an API call
+            if (username && email && firstName && lastName && password) {
+                localStorage.setItem('token', 'mock-jwt-token');
+                localStorage.setItem('userRole', role);
+                localStorage.setItem('userName', `${firstName} ${lastName}`);
+                
+                showNotification('Registration successful!', 'success');
+                updateNavigation();
+                showSection('dashboard');
+            } else {
+                showNotification('Please fill all fields', 'error');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.clear();
+            showNotification('Logged out successfully', 'info');
+            updateNavigation();
+            showSection('landing');
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast toast-${type} show`;
+            
+            setTimeout(() => {
+                toast.className = 'toast';
+            }, 3000);
+        }
+
+        // Load dashboard data
+        function loadDashboardData() {
+            const enrolledCoursesList = document.getElementById('enrolledCoursesList');
+            const progressChart = document.getElementById('progressChart');
+            
+            // Mock data for demo
+            enrolledCoursesList.innerHTML = `
+                <div class="empty-state">
+                    <h3>No courses enrolled yet</h3>
+                    <p>Start your learning journey by enrolling in a course</p>
+                    <button onclick="showSection('courses')" class="btn-primary">Browse Courses</button>
+                </div>
+            `;
+            
+            progressChart.innerHTML = `
+                <div class="empty-state">
+                    <h3>Progress Tracking</h3>
+                    <p>Your learning progress will appear here once you start taking courses</p>
+                </div>
+            `;
+        }
+
+        // Load courses
+        function loadCourses() {
+            const coursesList = document.getElementById('coursesList');
+            
+            // Mock courses data
+            const courses = [
+                {
+                    id: 1,
+                    title: 'Introduction to Web Development',
+                    category: 'Programming',
+                    instructor: 'John Smith',
+                    rating: 4.8,
+                    students: 1250,
+                    lectures: 45,
+                    price: 49.99
+                },
+                {
+                    id: 2,
+                    title: 'Data Science Fundamentals',
+                    category: 'Data Science',
+                    instructor: 'Sarah Johnson',
+                    rating: 4.6,
+                    students: 890,
+                    lectures: 32,
+                    price: 59.99
+                },
+                {
+                    id: 3,
+                    title: 'Mobile App Development with React Native',
+                    category: 'Mobile Development',
+                    instructor: 'Mike Chen',
+                    rating: 4.9,
+                    students: 2100,
+                    lectures: 58,
+                    price: 69.99
+                }
+            ];
+            
+            coursesList.innerHTML = courses.map(course => `
+                <div class="course-card">
+                    <img src="https://via.placeholder.com/400x200/667eea/ffffff?text=${encodeURIComponent(course.title)}" alt="${course.title}">
+                    <div class="course-card-content">
+                        <span class="course-category">${course.category}</span>
+                        <h3>${course.title}</h3>
+                        <p class="course-instructor">By ${course.instructor}</p>
+                        <div class="course-meta">
+                            <span>⭐ ${course.rating}</span>
+                            <span>${course.students} students</span>
+                            <span>${course.lectures} lectures</span>
+                        </div>
+                        <p class="course-price">$${course.price}</p>
+                        <button class="btn-primary" style="width: 100%; margin-top: 1rem;">Enroll Now</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load instructor courses
+        function loadInstructorCourses() {
+            const instructorCoursesList = document.getElementById('instructorCoursesList');
+            
+            // Mock data for demo
+            instructorCoursesList.innerHTML = `
+                <div class="empty-state">
+                    <h3>No courses created yet</h3>
+                    <p>Start creating your first course to share your knowledge</p>
+                    <button onclick="showSection('create-course')" class="btn-primary">Create Course</button>
+                </div>
+            `;
+        }
+
+        // Create course
+        function createCourse(event) {
+            event.preventDefault();
+            const title = document.getElementById('courseTitle').value;
+            const description = document.getElementById('courseDescription').value;
+            const category = document.getElementById('courseCategory').value;
+            const difficulty = document.getElementById('courseDifficulty').value;
+            
+            // Mock course creation
+            if (title && description && category) {
+                showNotification('Course created successfully!', 'success');
+                document.getElementById('createCourseForm').reset();
+                showSection('instructor-courses');
+            } else {
+                showNotification('Please fill all required fields', 'error');
+            }
+        }
+
+        // AI Tutor functions
+        function createNewAISession() {
+            const aiMessages = document.getElementById('aiMessages');
+            aiMessages.innerHTML = `
+                <div class="message ai-message">
+                    <div class="message-content">
+                        <strong>AI Tutor:</strong> Hello! I'm your AI learning assistant. How can I help you today? You can ask me to explain concepts, create exercises, review code, or help with your career goals.
+                    </div>
+                </div>
+            `;
+        }
+
+        function sendAIQuery() {
+            const input = document.getElementById('aiQueryInput');
+            const query = input.value.trim();
+            
+            if (!query) return;
+            
+            const aiMessages = document.getElementById('aiMessages');
+            
+            // Add user message
+            aiMessages.innerHTML += `
+                <div class="message user-message">
+                    <div class="message-content">
+                        <strong>You:</strong> ${query}
+                    </div>
+                </div>
+            `;
+            
+            // Clear input
+            input.value = '';
+            
+            // Mock AI response
+            setTimeout(() => {
+                const responses = [
+                    "That's a great question! Let me explain this concept step by step...",
+                    "I'd be happy to help with that. Here's what you need to know...",
+                    "Based on your question, I think you might find this approach helpful...",
+                    "Let me break this down into simpler concepts for better understanding..."
+                ];
+                
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                
+                aiMessages.innerHTML += `
+                    <div class="message ai-message">
+                        <div class="message-content">
+                            <strong>AI Tutor:</strong> ${randomResponse}
+                        </div>
+                    </div>
+                `;
+                
+                // Scroll to bottom
+                aiMessages.scrollTop = aiMessages.scrollHeight;
+            }, 1000);
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavigation();
+            
+            // Show landing page by default
+            if (!isLoggedIn()) {
+                showSection('landing');
+            } else {
+                showSection('dashboard');
+            }
+        });
+    </script>
+</body>
+</html>
